@@ -1,0 +1,397 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "1. Create project scaffold": [
+      {
+        "executionId": "eb41942b-eebf-47f1-882f-54d6a55b10b0",
+        "chatSessionId": "sess_1fc47b74-2f64-4373-b720-a6f6a915c1b3",
+        "timestamp": 1795097006752
+      },
+      {
+        "executionId": "eb41942b-eebf-47f1-882f-54d6a55b10b0",
+        "chatSessionId": "sess_1fc47b74-2f64-4373-b720-a6f6a915c1b3",
+        "timestamp": 1795097111251
+      }
+    ],
+    "2. Add theme flash prevention and HTML structure": [
+      {
+        "executionId": "f2286e22-b7de-4af5-bdc5-af1fb7390e5a",
+        "chatSessionId": "sess_c8c07ea7-6c18-481f-afa6-89aab60f3c81",
+        "timestamp": 1795097170953
+      },
+      {
+        "executionId": "f2286e22-b7de-4af5-bdc5-af1fb7390e5a",
+        "chatSessionId": "sess_c8c07ea7-6c18-481f-afa6-89aab60f3c81",
+        "timestamp": 1795097330408
+      }
+    ],
+    "3.1 Write CSS custom properties on `:root` for the dark theme palette (`--bg`, `--card`, `--surface`, `--accent`, `--accent2`, `--text`, `--text-muted`, `--success`, `--danger`, `--border`) and override all of them under `[data-theme=\"light\"]` with the light palette values from the design": [
+      {
+        "executionId": "5d877260-418e-4263-b96b-896ffb8ed307",
+        "chatSessionId": "sess_186fedc8-83d4-443b-a89f-d42164cddcc7",
+        "timestamp": 1795097388011
+      },
+      {
+        "executionId": "5d877260-418e-4263-b96b-896ffb8ed307",
+        "chatSessionId": "sess_186fedc8-83d4-443b-a89f-d42164cddcc7",
+        "timestamp": 1795097611541
+      }
+    ],
+    "3.2 Write global reset, base typography, card styles (rounded corners, border, background using CSS variables), and consistent component spacing": [
+      {
+        "executionId": "5d877260-418e-4263-b96b-896ffb8ed307",
+        "chatSessionId": "sess_186fedc8-83d4-443b-a89f-d42164cddcc7",
+        "timestamp": 1795097393333
+      },
+      {
+        "executionId": "5d877260-418e-4263-b96b-896ffb8ed307",
+        "chatSessionId": "sess_186fedc8-83d4-443b-a89f-d42164cddcc7",
+        "timestamp": 1795097616765
+      }
+    ],
+    "3.3 Write the two-column main grid layout (Focus Timer and Task Manager side by side) for desktop (≥768px) and single-column stacking for mobile (<768px) using a CSS media query": [
+      {
+        "executionId": "5d877260-418e-4263-b96b-896ffb8ed307",
+        "chatSessionId": "sess_186fedc8-83d4-443b-a89f-d42164cddcc7",
+        "timestamp": 1795097398800
+      },
+      {
+        "executionId": "5d877260-418e-4263-b96b-896ffb8ed307",
+        "chatSessionId": "sess_186fedc8-83d4-443b-a89f-d42164cddcc7",
+        "timestamp": 1795097622576
+      }
+    ],
+    "3.4 Add `transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease` globally so all cards, text, and borders animate on theme switch": [
+      {
+        "executionId": "5d877260-418e-4263-b96b-896ffb8ed307",
+        "chatSessionId": "sess_186fedc8-83d4-443b-a89f-d42164cddcc7",
+        "timestamp": 1795097404307
+      },
+      {
+        "executionId": "5d877260-418e-4263-b96b-896ffb8ed307",
+        "chatSessionId": "sess_186fedc8-83d4-443b-a89f-d42164cddcc7",
+        "timestamp": 1795097628075
+      }
+    ],
+    "3. Implement CSS foundation": [
+      {
+        "executionId": "5d877260-418e-4263-b96b-896ffb8ed307",
+        "chatSessionId": "sess_186fedc8-83d4-443b-a89f-d42164cddcc7",
+        "timestamp": 1795097628138
+      }
+    ],
+    "4.1 Write `LocalStorageService` in `js/script.js` with `getJSON(key)` (try/catch JSON.parse, returns null on error), `setJSON(key, value)` (try/catch setItem, shows brief user-visible warning and logs on QuotaExceededError or any storage error), `getRaw(key)`, `setRaw(key, value)` (try/catch, shows brief user-visible warning on failure), and `removeItem(key)`": [
+      {
+        "executionId": "ce229f0c-21ac-470a-a0e9-381a86854057",
+        "chatSessionId": "sess_659270ed-2afd-496e-97da-53c5229f31fd",
+        "timestamp": 1795097668997
+      },
+      {
+        "executionId": "ce229f0c-21ac-470a-a0e9-381a86854057",
+        "chatSessionId": "sess_659270ed-2afd-496e-97da-53c5229f31fd",
+        "timestamp": 1795097733423
+      }
+    ],
+    "4.2 Write `generateId()` utility that uses `crypto.randomUUID()` when available and falls back to `Date.now().toString() + Math.random().toString(36).slice(2)`": [
+      {
+        "executionId": "ce229f0c-21ac-470a-a0e9-381a86854057",
+        "chatSessionId": "sess_659270ed-2afd-496e-97da-53c5229f31fd",
+        "timestamp": 1795097674394
+      },
+      {
+        "executionId": "ce229f0c-21ac-470a-a0e9-381a86854057",
+        "chatSessionId": "sess_659270ed-2afd-496e-97da-53c5229f31fd",
+        "timestamp": 1795097739681
+      }
+    ],
+    "4. Implement LocalStorageService and generateId": [
+      {
+        "executionId": "ce229f0c-21ac-470a-a0e9-381a86854057",
+        "chatSessionId": "sess_659270ed-2afd-496e-97da-53c5229f31fd",
+        "timestamp": 1795097739727
+      }
+    ],
+    "5.1 Write `ThemeManager` with `init()` (reads `getRaw(\"theme\")`, defaults to `\"dark\"`, sets `data-theme` on `<html>`, updates toggle button icon), `toggle()` (switches between `\"dark\"` and `\"light\"`, calls `setRaw(\"theme\", theme)`, updates the toggle button icon to sun☀/moon🌙), and `getTheme()` returning `\"dark\" | \"light\"`": [
+      {
+        "executionId": "60863602-7c04-4d6a-93b2-caaef3cb256d",
+        "chatSessionId": "sess_fe3df641-19a1-4abd-b940-938b097fcae1",
+        "timestamp": 1795097772845
+      },
+      {
+        "executionId": "60863602-7c04-4d6a-93b2-caaef3cb256d",
+        "chatSessionId": "sess_fe3df641-19a1-4abd-b940-938b097fcae1",
+        "timestamp": 1795097824933
+      }
+    ],
+    "5.2 Wire the theme toggle button's click handler to `ThemeManager.toggle()` in the DOMContentLoaded initialization sequence": [
+      {
+        "executionId": "60863602-7c04-4d6a-93b2-caaef3cb256d",
+        "chatSessionId": "sess_fe3df641-19a1-4abd-b940-938b097fcae1",
+        "timestamp": 1795097830016
+      },
+      {
+        "executionId": "60863602-7c04-4d6a-93b2-caaef3cb256d",
+        "chatSessionId": "sess_fe3df641-19a1-4abd-b940-938b097fcae1",
+        "timestamp": 1795097835869
+      }
+    ],
+    "5. Implement ThemeManager": [
+      {
+        "executionId": "60863602-7c04-4d6a-93b2-caaef3cb256d",
+        "chatSessionId": "sess_fe3df641-19a1-4abd-b940-938b097fcae1",
+        "timestamp": 1795097835893
+      }
+    ],
+    "6.1 Write pure functions `formatTime(date)` returning `\"HH:MM\"` (24-hour, zero-padded hour and minute), `formatDate(date)` returning `\"Weekday, Day Month Year\"`, and `getGreeting(hour)` returning `\"Good Morning\"` for hours 0–11, `\"Good Afternoon\"` for 12–17, `\"Good Evening\"` for 18–23": [
+      {
+        "executionId": "e25ede9b-a98d-48ae-a500-ff8cadc64082",
+        "chatSessionId": "sess_73bd4cbc-6752-4c9c-b1ec-4817ce83ef13",
+        "timestamp": 1795097879803
+      },
+      {
+        "executionId": "e25ede9b-a98d-48ae-a500-ff8cadc64082",
+        "chatSessionId": "sess_73bd4cbc-6752-4c9c-b1ec-4817ce83ef13",
+        "timestamp": 1795097926251
+      }
+    ],
+    "6.2 Write `GreetingDisplay` with `tick()` (calls `new Date()`, updates the clock, date, and greeting DOM elements) and `init()` (calls `tick()` immediately, then `setInterval(tick, 1000)`)": [
+      {
+        "executionId": "e25ede9b-a98d-48ae-a500-ff8cadc64082",
+        "chatSessionId": "sess_73bd4cbc-6752-4c9c-b1ec-4817ce83ef13",
+        "timestamp": 1795097932011
+      },
+      {
+        "executionId": "e25ede9b-a98d-48ae-a500-ff8cadc64082",
+        "chatSessionId": "sess_73bd4cbc-6752-4c9c-b1ec-4817ce83ef13",
+        "timestamp": 1795097981572
+      }
+    ],
+    "6.3 Add `GreetingDisplay.init()` call to the DOMContentLoaded initialization sequence": [
+      {
+        "executionId": "e25ede9b-a98d-48ae-a500-ff8cadc64082",
+        "chatSessionId": "sess_73bd4cbc-6752-4c9c-b1ec-4817ce83ef13",
+        "timestamp": 1795097987144
+      },
+      {
+        "executionId": "e25ede9b-a98d-48ae-a500-ff8cadc64082",
+        "chatSessionId": "sess_73bd4cbc-6752-4c9c-b1ec-4817ce83ef13",
+        "timestamp": 1795098014784
+      }
+    ],
+    "6. Implement GreetingDisplay": [
+      {
+        "executionId": "e25ede9b-a98d-48ae-a500-ff8cadc64082",
+        "chatSessionId": "sess_73bd4cbc-6752-4c9c-b1ec-4817ce83ef13",
+        "timestamp": 1795098014822
+      }
+    ],
+    "7.1 Write `FocusTimer` state machine with `state` (`IDLE | RUNNING | PAUSED`), `remaining` (seconds), `startTimestamp`, and `startRemaining` instance variables; write `formatDisplay(seconds)` returning `\"MM:SS\"` with zero-padded minutes and seconds": [
+      {
+        "executionId": "5517eb9e-970d-4d71-98ab-f104b7b4f8fe",
+        "chatSessionId": "sess_c17aae63-eac4-4416-8a95-81c01ffa0d6c",
+        "timestamp": 1795098092916
+      },
+      {
+        "executionId": "5517eb9e-970d-4d71-98ab-f104b7b4f8fe",
+        "chatSessionId": "sess_c17aae63-eac4-4416-8a95-81c01ffa0d6c",
+        "timestamp": 1795098171059
+      }
+    ],
+    "7.2 Write `start()`: guard no-op if already `RUNNING`; snapshot `startRemaining = remaining` and `startTimestamp = Date.now()`; set `state = RUNNING`; begin `setInterval(countdown, 500)` where `countdown()` recalculates `remaining` from the timestamp and transitions to `IDLE` (clearing the interval) when `remaining <= 0`; call `render()`": [
+      {
+        "executionId": "5517eb9e-970d-4d71-98ab-f104b7b4f8fe",
+        "chatSessionId": "sess_c17aae63-eac4-4416-8a95-81c01ffa0d6c",
+        "timestamp": 1795098177416
+      },
+      {
+        "executionId": "5517eb9e-970d-4d71-98ab-f104b7b4f8fe",
+        "chatSessionId": "sess_c17aae63-eac4-4416-8a95-81c01ffa0d6c",
+        "timestamp": 1795098181378
+      }
+    ],
+    "7.3 Write `stop()`: guard no-op if `IDLE`; compute `elapsed = Math.floor((Date.now() - startTimestamp) / 1000)`; set `remaining = Math.max(0, startRemaining - elapsed)`; clear interval; set `state = PAUSED`; call `render()`": [
+      {
+        "executionId": "5517eb9e-970d-4d71-98ab-f104b7b4f8fe",
+        "chatSessionId": "sess_c17aae63-eac4-4416-8a95-81c01ffa0d6c",
+        "timestamp": 1795098186716
+      },
+      {
+        "executionId": "5517eb9e-970d-4d71-98ab-f104b7b4f8fe",
+        "chatSessionId": "sess_c17aae63-eac4-4416-8a95-81c01ffa0d6c",
+        "timestamp": 1795098192470
+      }
+    ],
+    "7.4 Write `reset()`: clear interval; set `state = IDLE`, `remaining = 1500`; call `render()`; write `init()` that calls `reset()` and wires the Start, Stop, and Reset button click handlers": [
+      {
+        "executionId": "5517eb9e-970d-4d71-98ab-f104b7b4f8fe",
+        "chatSessionId": "sess_c17aae63-eac4-4416-8a95-81c01ffa0d6c",
+        "timestamp": 1795098198283
+      },
+      {
+        "executionId": "5517eb9e-970d-4d71-98ab-f104b7b4f8fe",
+        "chatSessionId": "sess_c17aae63-eac4-4416-8a95-81c01ffa0d6c",
+        "timestamp": 1795098203789
+      }
+    ],
+    "7.5 Add `FocusTimer.init()` to the DOMContentLoaded initialization sequence": [
+      {
+        "executionId": "5517eb9e-970d-4d71-98ab-f104b7b4f8fe",
+        "chatSessionId": "sess_c17aae63-eac4-4416-8a95-81c01ffa0d6c",
+        "timestamp": 1795098208357
+      },
+      {
+        "executionId": "5517eb9e-970d-4d71-98ab-f104b7b4f8fe",
+        "chatSessionId": "sess_c17aae63-eac4-4416-8a95-81c01ffa0d6c",
+        "timestamp": 1795098212810
+      }
+    ],
+    "7. Implement FocusTimer": [
+      {
+        "executionId": "5517eb9e-970d-4d71-98ab-f104b7b4f8fe",
+        "chatSessionId": "sess_c17aae63-eac4-4416-8a95-81c01ffa0d6c",
+        "timestamp": 1795098212877
+      }
+    ],
+    "8.1 Write `isValidTask(item)` (checks `id`, `text`, `completed`, `createdAt` are correct types and non-empty), and `TaskManager.init()` that calls `LocalStorageService.getJSON(\"tasks\")`, guards with `Array.isArray`, filters items through `isValidTask`, assigns to the in-memory array, and calls `render()`": [
+      {
+        "executionId": "e2cbc549-91c9-44f3-916a-5efbcadb38f4",
+        "chatSessionId": "sess_1ab66525-0371-4d83-bbc9-5239ca74894e",
+        "timestamp": 1795098267400
+      },
+      {
+        "executionId": "e2cbc549-91c9-44f3-916a-5efbcadb38f4",
+        "chatSessionId": "sess_1ab66525-0371-4d83-bbc9-5239ca74894e",
+        "timestamp": 1795098381411
+      }
+    ],
+    "8.2 Write `TaskManager.addTask(text)`: trim input, reject if empty/whitespace (show red border feedback), create a Task object using `generateId()` and `new Date().toISOString()`, push to array, call `persist()` and `render()`": [
+      {
+        "executionId": "e2cbc549-91c9-44f3-916a-5efbcadb38f4",
+        "chatSessionId": "sess_1ab66525-0371-4d83-bbc9-5239ca74894e",
+        "timestamp": 1795098390134
+      },
+      {
+        "executionId": "4fc276b7-a967-4d23-bb62-f54abffe0379",
+        "chatSessionId": "sess_cad808d0-6594-4740-b858-f98798905fa2",
+        "timestamp": 1795098514667
+      }
+    ],
+    "9. Implement QuickLinksManager": [
+      {
+        "executionId": "32e830c8-f084-4fbc-83e5-09ba8efb4a35",
+        "chatSessionId": "sess_994072b8-9652-4fe7-81b6-8957470f8f31",
+        "timestamp": 1795098538247
+      },
+      {
+        "executionId": "32e830c8-f084-4fbc-83e5-09ba8efb4a35",
+        "chatSessionId": "sess_994072b8-9652-4fe7-81b6-8957470f8f31",
+        "timestamp": 1795098881364
+      }
+    ],
+    "11. Add input validation UI and storage failure warnings": [
+      {
+        "executionId": "3a6629ec-3514-4a29-8522-58868a23ba04",
+        "chatSessionId": "sess_295a05e8-3ef5-43fc-8ad9-51a4a9ebbbb4",
+        "timestamp": 1795098923625
+      },
+      {
+        "executionId": "3a6629ec-3514-4a29-8522-58868a23ba04",
+        "chatSessionId": "sess_295a05e8-3ef5-43fc-8ad9-51a4a9ebbbb4",
+        "timestamp": 1795099121897
+      }
+    ],
+    "8.3 Write `TaskManager.editTask(id, newText)`: reject empty/whitespace `newText` (show red border feedback, restore original text), update `text` in the array, call `persist()` and `render()`": [
+      {
+        "executionId": "e80108ee-66fc-4270-927c-63f373918c35",
+        "chatSessionId": "sess_71aa7c54-2b0b-4acf-9e98-7082a194c49b",
+        "timestamp": 1795099150730
+      },
+      {
+        "executionId": "e80108ee-66fc-4270-927c-63f373918c35",
+        "chatSessionId": "sess_71aa7c54-2b0b-4acf-9e98-7082a194c49b",
+        "timestamp": 1795099829427
+      }
+    ],
+    "8.4 Write `TaskManager.toggleTask(id)` (flip `completed` boolean, `persist()`, `render()`) and `TaskManager.deleteTask(id)` (filter out by `id`, `persist()`, `render()`)": [
+      {
+        "executionId": "662356b1-fb3f-4f50-9811-40a58a1ff2c8",
+        "chatSessionId": "sess_14ac2c56-85e0-4d90-9396-00efa1245801",
+        "timestamp": 1795099868504
+      }
+    ],
+    "8.5 Write `TaskManager.persist()` calling `LocalStorageService.setJSON(\"tasks\", tasks)`, and `TaskManager.render()` that rebuilds the task list DOM entirely using `document.createElement()` — assign all user text via `.textContent`, never `innerHTML`; include edit (pencil) and delete (trash) buttons per task row; inline edit mode switches the task text to an input field": [
+      {
+        "executionId": "5d1ecb64-1019-4efb-a818-0cc5cf7ce3d4",
+        "chatSessionId": "sess_c57fd5fa-287a-4d3b-a899-215b0c1269ff",
+        "timestamp": 1795099905407
+      },
+      {
+        "executionId": "5d1ecb64-1019-4efb-a818-0cc5cf7ce3d4",
+        "chatSessionId": "sess_c57fd5fa-287a-4d3b-a899-215b0c1269ff",
+        "timestamp": 1795100681193
+      }
+    ],
+    "8.6 Add `TaskManager.init()` to the DOMContentLoaded initialization sequence": [
+      {
+        "executionId": "c9364502-f29e-4ba3-a75f-33de2e54eb42",
+        "chatSessionId": "sess_6cbd5b78-788f-4eb9-bd01-9b54e94d9d61",
+        "timestamp": 1795100719385
+      },
+      {
+        "executionId": "c9364502-f29e-4ba3-a75f-33de2e54eb42",
+        "chatSessionId": "sess_6cbd5b78-788f-4eb9-bd01-9b54e94d9d61",
+        "timestamp": 1795100923178
+      }
+    ],
+    "8. Implement TaskManager": [
+      {
+        "executionId": "c9364502-f29e-4ba3-a75f-33de2e54eb42",
+        "chatSessionId": "sess_6cbd5b78-788f-4eb9-bd01-9b54e94d9d61",
+        "timestamp": 1795100923233
+      }
+    ],
+    "9.1 Write `isValidUrl(url)`: trim the input, attempt `new URL(trimmedUrl)`, return `false` if the constructor throws, if `protocol` is not `\"http:\"` or `\"https:\"`, or if `hostname` is empty or whitespace-only; return `true` otherwise": [
+      {
+        "executionId": "fa30db5a-5077-4b27-aa72-072043bc9fa9",
+        "chatSessionId": "sess_900aa628-9760-4fbb-ae96-1f841bd784d4",
+        "timestamp": 1795100962326
+      },
+      {
+        "executionId": "fa30db5a-5077-4b27-aa72-072043bc9fa9",
+        "chatSessionId": "sess_900aa628-9760-4fbb-ae96-1f841bd784d4",
+        "timestamp": 1795101071665
+      }
+    ],
+    "9.3 Write `QuickLinksManager.addLink(name, url)`: trim both inputs; reject empty name or URL (show red border feedback); reject URL that fails `isValidUrl` (show red border feedback on the URL field); store the link with `url` set to `new URL(trimmedUrl).href` (normalized); call `persist()` and `render()`": [
+      {
+        "executionId": "d0eae6f0-3e50-461a-8bd5-676ec8d78c8e",
+        "chatSessionId": "sess_529e2b8e-5ba4-4791-8a3b-b365186c5034",
+        "timestamp": 1795101153621
+      },
+      {
+        "executionId": "d0eae6f0-3e50-461a-8bd5-676ec8d78c8e",
+        "chatSessionId": "sess_529e2b8e-5ba4-4791-8a3b-b365186c5034",
+        "timestamp": 1795101400217
+      }
+    ],
+    "9.4 Write `QuickLinksManager.deleteLink(id)` (filter out by `id`, `persist()`, `render()`), `QuickLinksManager.openLink(url)` (calls `window.open(url, \"_blank\", \"noopener,noreferrer\")`), and `QuickLinksManager.persist()` calling `LocalStorageService.setJSON(\"quickLinks\", links)`": [
+      {
+        "executionId": "7ecaec5f-fe8e-4acb-ab8f-a1f58988be19",
+        "chatSessionId": "sess_e59bafc5-8b52-4bab-a479-fe9f6b13e824",
+        "timestamp": 1795101438203
+      }
+    ],
+    "11.2 Apply `.input-error` class (remove after short delay or on next valid input) in `TaskManager.addTask`, `TaskManager.editTask`, `QuickLinksManager.addLink` for empty/whitespace rejections and invalid URL rejections; call `showStorageWarning` from `LocalStorageService.setJSON` and `setRaw` on storage failure": [
+      {
+        "executionId": "c722d356-89fc-4f18-8f81-73002bcd2839",
+        "chatSessionId": "sess_0488bffe-ca26-4419-b6d9-1bb7b6c006c5",
+        "timestamp": 1795101877281
+      },
+      {
+        "executionId": "c722d356-89fc-4f18-8f81-73002bcd2839",
+        "chatSessionId": "sess_0488bffe-ca26-4419-b6d9-1bb7b6c006c5",
+        "timestamp": 1795102235948
+      }
+    ]
+  }
+}

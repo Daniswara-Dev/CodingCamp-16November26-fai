@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>To-Do List Life Dashboard</title>
+    <script>
+      const t = localStorage.getItem('theme');
+      document.documentElement.setAttribute('data-theme', t === 'light' ? 'light' : 'dark');
+    </script>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="header">
+      <div class="header__greeting-group">
+        <span id="greeting" class="header__greeting"></span>
+        <span id="clock" class="header__clock"></span>
+        <span id="date-display" class="header__date"></span>
+      </div>
+      <button id="theme-toggle" class="header__theme-toggle" aria-label="Toggle theme"></button>
+    </header>
+
+    <!-- Main content -->
+    <main class="main-grid">
+      <!-- Focus Timer card -->
+      <section class="card card--timer" aria-label="Focus Timer">
+        <h2 class="card__title">Focus Timer</h2>
+        <div id="timer-display" class="timer__display">25:00</div>
+        <div class="timer__controls">
+          <button id="timer-start" class="btn btn--primary">Start</button>
+          <button id="timer-stop" class="btn btn--secondary">Stop</button>
+          <button id="timer-reset" class="btn btn--ghost">Reset</button>
+        </div>
+      </section>
+
+      <!-- Task Manager card -->
+      <section class="card card--tasks" aria-label="Task Manager">
+        <h2 class="card__title">Tasks</h2>
+        <div class="tasks__input-row">
+          <input
+            id="task-input"
+            class="input"
+            type="text"
+            placeholder="Add a new task..."
+            aria-label="New task description"
+          />
+          <button id="add-task-btn" class="btn btn--primary" aria-label="Add task">+</button>
+        </div>
+        <div class="tasks__sort-row">
+          <label for="sort-select" class="tasks__sort-label">Sort:</label>
+          <select id="sort-select" class="select" aria-label="Sort tasks">
+            <option value="active-first">Active First</option>
+            <option value="completed-first">Completed First</option>
+            <option value="alphabetical">Alphabetical</option>
+          </select>
+        </div>
+        <ul id="task-list" class="task-list" aria-label="Task list" aria-live="polite"></ul>
+      </section>
+    </main>
+
+    <!-- Quick Links card -->
+    <section class="card card--links" aria-label="Quick Links">
+      <h2 class="card__title">Quick Links</h2>
+      <div class="links__input-row">
+        <input
+          id="link-name-input"
+          class="input"
+          type="text"
+          placeholder="Name"
+          aria-label="Link display name"
+        />
+        <input
+          id="link-url-input"
+          class="input"
+          type="url"
+          placeholder="https://example.com"
+          aria-label="Link URL"
+        />
+        <button id="add-link-btn" class="btn btn--primary" aria-label="Add link">Add</button>
+      </div>
+      <ul id="links-list" class="links-list" aria-label="Quick links list" aria-live="polite"></ul>
+    </section>
+
+    <script src="js/script.js"></script>
+  </body>
+</html>
