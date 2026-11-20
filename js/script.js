@@ -76,12 +76,33 @@ const LocalStorageService = {
 const ThemeManager = (() => {
   let _theme = 'dark';
 
-  function _applyIcon() {
+  function _applyIcon(animate) {
     const btn = document.getElementById('theme-toggle');
     if (!btn) return;
-    // Dark mode → show sun (clicking will switch to light)
-    // Light mode → show moon (clicking will switch to dark)
-    btn.textContent = _theme === 'dark' ? '☀' : '🌙';
+    const icon = _theme === 'dark' ? '☀' : '🌙';
+
+    if (animate) {
+      // Trigger fade-out → swap → fade-in without any rotation.
+      // @keyframes icon-swap fades+scales to 0 at 40%, holds through 60%
+      // (content swaps here), then fades+scales back to 1 at 100%.
+      btn.classList.remove('icon-swap');
+      void btn.offsetWidth; // force reflow so re-adding re-triggers the animation
+      btn.classList.add('icon-swap');
+
+      // Swap the icon content at the midpoint of the fade-out (40% of 300ms ≈ 120ms)
+      setTimeout(() => {
+        btn.setAttribute('data-icon', icon);
+      }, 120);
+
+      // Clean up the class once the animation completes
+      setTimeout(() => {
+        btn.classList.remove('icon-swap');
+      }, 320);
+    } else {
+      btn.setAttribute('data-icon', icon);
+    }
+
+    btn.setAttribute('aria-label', _theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
   }
 
   return {
@@ -89,14 +110,14 @@ const ThemeManager = (() => {
       const saved = LocalStorageService.getRaw('theme');
       _theme = saved === 'light' ? 'light' : 'dark';
       document.documentElement.setAttribute('data-theme', _theme);
-      _applyIcon();
+      _applyIcon(false); // no animation on initial load
     },
 
     toggle() {
       _theme = _theme === 'dark' ? 'light' : 'dark';
       document.documentElement.setAttribute('data-theme', _theme);
       LocalStorageService.setRaw('theme', _theme);
-      _applyIcon();
+      _applyIcon(true); // animate the icon swap on user interaction
     },
 
     getTheme() {
@@ -1001,15 +1022,107 @@ const QuickLinksManager = (() => {
   return { init, addLink, deleteLink, openLink, persist, render };
 })();
 
+// ===== CircularReveal =====
+
+/**
+ * Guards against overlapping view transitions.
+ */
+let _isTransitioning = false;
+
+/**
+ * Calculates the viewport coordinates of the thumb centre inside the pill switch.
+ *
+ * Pill layout (matches CSS):
+ *   track width  : 64px,  height: 32px
+ *   padding      : 3px
+ *   thumb size   : 26px × 26px
+ *   dark  → thumb RIGHT: left-edge at (3 + 32) = 35px from track left
+ *   light → thumb LEFT:  left-edge at 3px from track left
+ *
+ * @param {DOMRect} rect  — getBoundingClientRect() of the button
+ * @param {string}  theme — current theme BEFORE the toggle ('dark' | 'light')
+ * @returns {{ x: number, y: number }}
+ */
+function _thumbCenter(rect, theme) {
+  const PADDING   = 3;
+  const THUMB     = 26;
+  const TRACK_W   = 64;
+  const TRAVEL    = TRACK_W - THUMB - 2 * PADDING; // 32px
+
+  // Thumb left-edge position within the track (CSS pixels from track left)
+  const thumbLeft = theme === 'dark' ? PADDING + TRAVEL : PADDING;
+
+  const x = rect.left + thumbLeft + THUMB / 2;
+  const y = rect.top  + PADDING   + THUMB / 2;
+  return { x, y };
+}
+
+/**
+ * Triggers a circular reveal originating from the thumb centre of the pill switch.
+ *
+ * @param {HTMLElement} btn — the #theme-toggle button element
+ */
+function triggerCircularReveal(btn) {
+  if (_isTransitioning) return;
+
+  // ── 1. Capture current theme BEFORE toggling ────────────────────────────
+  const currentTheme = ThemeManager.getTheme();
+
+  // ── 2. Calculate thumb centre in viewport coordinates ───────────────────
+  const rect = btn.getBoundingClientRect();
+  const { x, y } = _thumbCenter(rect, currentTheme);
+
+  // ── 3. Max radius to cover every corner of the viewport ─────────────────
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const maxRadius = Math.ceil(Math.max(
+    Math.hypot(x,      y),
+    Math.hypot(vw - x, y),
+    Math.hypot(x,      vh - y),
+    Math.hypot(vw - x, vh - y),
+  ));
+
+  // ── 4. Publish coordinates so @keyframes picks them up ──────────────────
+  const root = document.documentElement;
+  root.style.setProperty('--reveal-x',      x + 'px');
+  root.style.setProperty('--reveal-y',      y + 'px');
+  root.style.setProperty('--reveal-radius', maxRadius + 'px');
+
+  // ── 5. Graceful fallback ─────────────────────────────────────────────────
+  if (!document.startViewTransition) {
+    ThemeManager.toggle();
+    return;
+  }
+
+  // ── 6. View Transition ───────────────────────────────────────────────────
+  _isTransitioning = true;
+
+  const transition = document.startViewTransition(() => {
+    // Suppress CSS transitions during snapshot so the browser captures the
+    // final DOM state cleanly (not a mid-transition frame).
+    root.classList.add('no-transitions');
+    ThemeManager.toggle();
+    void root.offsetHeight; // force synchronous style flush
+    root.classList.remove('no-transitions');
+  });
+
+  transition.ready.catch(() => {});
+  transition.finished
+    .catch(() => {})
+    .finally(() => { _isTransitioning = false; });
+}
+
 // ===== Initialization =====
 
 document.addEventListener('DOMContentLoaded', () => {
   ThemeManager.init();
 
-  // Wire theme toggle button
+  // Wire theme toggle button — circular reveal when supported, CSS fallback otherwise
   const themeToggleBtn = document.getElementById('theme-toggle');
   if (themeToggleBtn) {
-    themeToggleBtn.addEventListener('click', () => ThemeManager.toggle());
+    themeToggleBtn.addEventListener('click', () => {
+      triggerCircularReveal(themeToggleBtn);
+    });
   }
 
   NameManager.init();

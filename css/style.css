@@ -136,22 +136,137 @@ body {
   color: var(--text-muted);
 }
 
+/* ── Pill toggle switch ─────────────────────────────────────────────────────
+   The <button> itself is the pill track.
+   ::before  — the sun/moon icon, centered inside the thumb circle.
+   ::after   — the circular thumb/knob that slides left ↔ right.
+
+   Track dimensions:
+     width  : 64px
+     height : 32px
+     padding: 3px  (gap between thumb and track edge)
+
+   Thumb dimensions:
+     width  : 26px  (track-height − 2×padding)
+     height : 26px
+
+   Thumb travel:
+     Dark  (default) — thumb on the RIGHT: translateX(32px)
+                        32 = track-width(64) − thumb-width(26) − 2×padding(6)
+     Light            — thumb on the LEFT:  translateX(0)
+   ─────────────────────────────────────────────────────────────────────────── */
+
 .header__theme-toggle {
+  /* Layout */
   flex-shrink: 0;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 0.4rem 0.75rem;
-  font-size: 1.25rem;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 32px;
+  padding: 0;
+  border-radius: 999px;
+  border: none;
   cursor: pointer;
-  color: var(--text);
-  line-height: 1;
+  overflow: hidden;      /* keep thumb inside the pill */
+  /* Reset inherited text so the emoji doesn't show on the track */
+  font-size: 0;
+  color: transparent;
+  /* Track colors */
+  background: #2a3a5c;   /* dark-mode track — deep blue-grey */
+  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.3);
+  /* Track color glides with the same spring curve as the thumb */
+  transition:
+    background-color 0.5s cubic-bezier(0.22, 1.25, 0.36, 1),
+    box-shadow       0.25s ease,
+    transform        0.12s ease;
+  will-change: transform;
+}
+
+[data-theme="light"] .header__theme-toggle {
+  background: #c8d7f5;   /* light-mode track — soft blue */
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .header__theme-toggle:hover {
-  background: var(--accent);
-  color: var(--bg);
-  border-color: var(--accent);
+  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 0 3px rgba(139, 156, 246, 0.22);
+}
+
+[data-theme="light"] .header__theme-toggle:hover {
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 0 3px rgba(101, 120, 219, 0.18);
+}
+
+/* Press feedback */
+.header__theme-toggle:active {
+  transform: scale(0.93);
+}
+
+/* ── Thumb (::after) ───────────────────────────────────────── */
+.header__theme-toggle::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.28);
+  /* Dark mode default: thumb on the RIGHT */
+  transform: translateX(32px);
+  /* Spring-like glide: 550ms with a tiny overshoot that settles naturally */
+  transition: transform   0.55s cubic-bezier(0.22, 1.25, 0.36, 1),
+              box-shadow  0.25s ease;
+  will-change: transform;
+}
+
+[data-theme="light"] .header__theme-toggle::after {
+  /* Light mode: thumb on the LEFT */
+  transform: translateX(0px);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.14);
+}
+
+/* ── Icon (::before) — centered on the thumb ─────────────── */
+.header__theme-toggle::before {
+  content: attr(data-icon);
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  line-height: 1;
+  /* Slide with the thumb — same spring curve */
+  transform: translateX(32px) scale(1);
+  transition: transform   0.55s cubic-bezier(0.22, 1.25, 0.36, 1),
+              opacity     0.15s ease,
+              scale       0.15s ease;
+  pointer-events: none;
+  /* Sit on top of the thumb */
+  z-index: 1;
+}
+
+[data-theme="light"] .header__theme-toggle::before {
+  transform: translateX(0px) scale(1);
+}
+
+/* Icon swap animation — JS adds this class just before changing data-icon,
+   removes it once the swap keyframe completes.
+   Fades + scales down, swaps content mid-way, then fades + scales back up.
+   No rotation. */
+.header__theme-toggle.icon-swap::before {
+  animation: icon-swap 0.3s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@keyframes icon-swap {
+  0%   { opacity: 1;    scale: 1;    }
+  40%  { opacity: 0;    scale: 0.6;  }
+  60%  { opacity: 0;    scale: 0.6;  }
+  100% { opacity: 1;    scale: 1;    }
 }
 
 /* ============================================================
@@ -611,5 +726,74 @@ body {
 @media (max-width: 767px) {
   .header__name-edit {
     margin-top: 0.4rem;
+  }
+}
+
+/* ============================================================
+   CIRCULAR REVEAL — VIEW TRANSITION ANIMATION
+   ============================================================ */
+
+/*
+ * Custom properties written by JS on every click:
+ *   --reveal-x       horizontal centre of the thumb (viewport px)
+ *   --reveal-y       vertical centre of the thumb (viewport px)
+ *   --reveal-radius  max distance to any viewport corner (px)
+ */
+
+/* Establish stacking context so z-index on old/new actually works */
+::view-transition-image-pair(root) {
+  isolation: isolate;
+}
+
+/* Cancel the browser default cross-fade on both snapshots */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* Outgoing snapshot: static, fully visible underneath */
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+/* Incoming snapshot: on top, revealed by expanding circle */
+::view-transition-new(root) {
+  z-index: 2;
+  animation: circular-reveal 1200ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes circular-reveal {
+  from {
+    clip-path: circle(0px at var(--reveal-x, 50%) var(--reveal-y, 50%));
+  }
+  to {
+    clip-path: circle(var(--reveal-radius, 150vmax) at var(--reveal-x, 50%) var(--reveal-y, 50%));
+  }
+}
+
+/* Suppress all element transitions during snapshot capture.
+   JS adds this class inside the startViewTransition callback. */
+.no-transitions *,
+.no-transitions *::before,
+.no-transitions *::after {
+  transition: none !important;
+}
+
+/* ── Accessibility: skip animations for reduced-motion users ── */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
+  }
+
+  .header__theme-toggle,
+  .header__theme-toggle::after,
+  .header__theme-toggle::before {
+    transition: none !important;
+  }
+
+  .header__theme-toggle.icon-swap::before {
+    animation: none !important;
   }
 }
