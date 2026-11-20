@@ -6,13 +6,15 @@ The To-Do List Life Dashboard is a Coding Camp assignment project: a productivit
 
 This requirements document is based on the original Coding Camp project brief and includes:
 - **Core MVP Features**: Time/date display, greeting, focus timer, to-do list, and quick links
-- **Selected Challenges (3 of 3)**:
+- **Selected Challenges (5 of 5)**:
   - Challenge 1: Light/Dark Mode theme switching ✓
   - Challenge 2: Prevent Duplicate Tasks ✓
   - Challenge 3: Sort Tasks ✓
+  - Challenge 4: Custom Name in Greeting ✓
+  - Challenge 5: Change Pomodoro Time ✓
 - **Technical Constraints**: Vanilla HTML/CSS/JS only, specific folder structure, browser compatibility
 
-All three required optional challenges are now selected and documented.
+All five optional challenges are selected and documented.
 
 ## Glossary
 
@@ -29,6 +31,9 @@ All three required optional challenges are now selected and documented.
 - **Theme_Manager**: The component that handles theme switching and persistence
 - **Light_Mode**: The light color scheme with background #F5F7FB and main text #172033
 - **Dark_Mode**: The dark color scheme with background #0B1120 and main text #F1F5F9
+
+- **Custom_Name**: The user-configured display name stored under the key `"userName"` in Local_Storage; defaults to empty when absent
+- **Pomodoro_Duration**: The user-selected timer duration in minutes (1–120), stored under key `"pomodoroDuration"`; defaults to 25 when absent
 
 - **Sort_Order**: The current sort mode applied to the task list display — one of Active_First, Completed_First, or Alphabetical
 - **Active_First**: Sort mode that shows incomplete tasks before completed tasks
@@ -68,7 +73,7 @@ All three required optional challenges are now selected and documented.
 1. THE Focus_Timer SHALL initialize with a default duration of 25 minutes
 2. WHEN the user activates the start control, THE Focus_Timer SHALL begin counting down from the current remaining time
 3. WHEN the user activates the stop control, THE Focus_Timer SHALL pause the countdown and preserve the remaining time
-4. WHEN the user activates the reset control, THE Focus_Timer SHALL set the remaining time to 25 minutes and stop the countdown
+4. WHEN the user activates the reset control, THE Focus_Timer SHALL set the remaining time to the currently selected duration and stop the countdown
 5. WHILE the Focus_Timer is counting down, THE Focus_Timer SHALL update the displayed time every second
 6. WHEN the remaining time reaches zero, THE Focus_Timer SHALL stop the countdown
 
@@ -159,7 +164,7 @@ All three required optional challenges are now selected and documented.
 1. THE Dashboard SHALL be implemented using HTML for structure
 2. THE Dashboard SHALL be implemented using CSS for styling
 3. THE Dashboard SHALL be implemented using vanilla JavaScript with no external frameworks
-4. THE Dashboard SHALL persist Tasks, Links, and Theme preferences using the browser Local_Storage API
+4. THE Dashboard SHALL persist Tasks, Links, Theme preferences, Custom_Name, and Pomodoro_Duration using the browser Local_Storage API
 5. THE Dashboard SHALL operate without a backend server
 
 ### Requirement 12: Browser Compatibility
@@ -273,3 +278,36 @@ All three required optional challenges are now selected and documented.
 7. WHEN the Task_Manager renders after any CRUD operation, THE Task_Manager SHALL apply the currently selected Sort_Order to the displayed list
 8. THE sort control SHALL default to Active_First on page load
 9. Sorting SHALL operate on a copy of the tasks array and SHALL NOT mutate the original array order stored in Local_Storage
+
+### Requirement 20: Custom Name in Greeting (Selected Challenge 4 of 5)
+
+**User Story:** As a user, I want to enter my name so that the dashboard greets me personally, making it feel like my own workspace.
+
+#### Acceptance Criteria
+
+1. THE Dashboard SHALL display a personalized welcome message in the header using the format "Welcome, [name]!" when a Custom_Name has been configured
+2. IF no Custom_Name has been configured, THE Dashboard SHALL display "Welcome!" as the default welcome message
+3. THE Dashboard SHALL display a small Edit Name button near the welcome message
+4. WHEN the user activates the Edit Name button, THE Dashboard SHALL reveal an inline name editor with a text input, a Save button, and a Cancel button — without using a browser prompt() dialog
+5. WHEN the user submits a non-empty name via Save or the Enter key, THE Greeting_Display SHALL update the welcome message and THE Dashboard SHALL persist the name to Local_Storage under the key `"userName"`
+6. WHEN the user submits an empty or whitespace-only name, THE Dashboard SHALL reject the submission and show a red border on the input field
+7. WHEN the user activates Cancel or presses Escape, THE Dashboard SHALL close the name editor without modifying the stored Custom_Name
+8. WHEN the Dashboard loads, THE Greeting_Display SHALL retrieve the Custom_Name from Local_Storage and display it in the welcome message
+9. THE Dashboard SHALL use `.textContent` (never `innerHTML`) when displaying the Custom_Name
+10. THE user SHALL be able to change the Custom_Name at any time by activating the Edit Name button again
+
+### Requirement 21: Change Pomodoro Time (Selected Challenge 5 of 5)
+
+**User Story:** As a user, I want to set a custom Pomodoro duration, so that I can adapt the timer to my preferred work-session length.
+
+#### Acceptance Criteria
+
+1. THE Focus_Timer card SHALL display a compact duration control consisting of a numeric input and an Apply/Set button
+2. THE duration input SHALL accept integer values from 1 to 120 (minutes inclusive)
+3. WHEN the user activates the Apply/Set button or presses Enter in the duration input while the timer is IDLE or PAUSED, THE Focus_Timer SHALL update Pomodoro_Duration, reset the countdown to the new duration, and persist the value to Local_Storage under the key `"pomodoroDuration"`
+4. WHEN the user attempts to change duration while the timer is RUNNING, THE Focus_Timer SHALL reject the change and show a clear inline error message without interrupting the countdown
+5. WHEN the Dashboard loads, THE Focus_Timer SHALL retrieve the saved Pomodoro_Duration from Local_Storage and initialize the countdown to that duration
+6. IF no Pomodoro_Duration has been saved, THE Focus_Timer SHALL default to 25 minutes
+7. WHEN the user activates the reset control, THE Focus_Timer SHALL reset the countdown to the currently selected Pomodoro_Duration (not necessarily 25 minutes)
+8. WHEN the user submits a value outside the 1–120 range or a non-integer, THE Focus_Timer SHALL reject the value and show inline error feedback
+9. THE Focus_Timer SHALL NOT persist an active countdown session — a page refresh always begins at the selected Pomodoro_Duration

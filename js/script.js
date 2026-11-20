@@ -39,7 +39,12 @@ const LocalStorageService = {
    * @returns {string|null}
    */
   getRaw(key) {
-    return localStorage.getItem(key);
+    try {
+      return localStorage.getItem(key);
+    } catch (err) {
+      console.error('[LocalStorageService] getRaw failed for key "' + key + '":', err);
+      return null;
+    }
   },
 
   /**
@@ -97,6 +102,99 @@ const ThemeManager = (() => {
     getTheme() {
       return _theme;
     },
+  };
+})();
+
+// ===== NameManager =====
+
+const NameManager = (() => {
+  let _name = '';
+
+  /**
+   * Updates the #welcome-name element.
+   * Shows "Welcome, [name]!" when a name is set, "Welcome!" otherwise.
+   */
+  function _render() {
+    const el = document.getElementById('welcome-name');
+    if (!el) return;
+    el.textContent = _name ? 'Welcome, ' + _name + '!' : 'Welcome!';
+  }
+
+  /**
+   * Enters inline edit mode: shows the name editor, hides the edit button.
+   */
+  function _enterEditMode() {
+    const area = document.getElementById('name-edit-area');
+    const editBtn = document.getElementById('edit-name-btn');
+    const input = document.getElementById('name-input');
+    if (area) {
+      area.hidden = false;
+      if (input) {
+        input.value = _name;
+        input.focus();
+        input.select();
+      }
+    }
+    if (editBtn) editBtn.hidden = true;
+  }
+
+  /**
+   * Exits inline edit mode: hides the editor, shows the edit button.
+   */
+  function _exitEditMode() {
+    const area = document.getElementById('name-edit-area');
+    const editBtn = document.getElementById('edit-name-btn');
+    const input = document.getElementById('name-input');
+    if (area) area.hidden = true;
+    if (editBtn) editBtn.hidden = false;
+    // Clear any error state
+    if (input) input.classList.remove('input-error');
+  }
+
+  /**
+   * Attempts to save the name from the input.
+   * Rejects empty / whitespace-only values with a red border.
+   */
+  function _save() {
+    const input = document.getElementById('name-input');
+    if (!input) return;
+    const trimmed = input.value.trim();
+
+    if (!trimmed) {
+      input.classList.add('input-error');
+      setTimeout(() => input.classList.remove('input-error'), 1500);
+      return;
+    }
+
+    _name = trimmed;
+    LocalStorageService.setRaw('userName', _name);
+    _render();
+    _exitEditMode();
+  }
+
+  return {
+    init() {
+      const saved = LocalStorageService.getRaw('userName');
+      _name = (saved && saved.trim()) ? saved.trim() : '';
+      _render();
+
+      const editBtn = document.getElementById('edit-name-btn');
+      const saveBtn = document.getElementById('name-save-btn');
+      const cancelBtn = document.getElementById('name-cancel-btn');
+      const input = document.getElementById('name-input');
+
+      if (editBtn) editBtn.addEventListener('click', _enterEditMode);
+      if (saveBtn) saveBtn.addEventListener('click', _save);
+      if (cancelBtn) cancelBtn.addEventListener('click', _exitEditMode);
+      if (input) {
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') _save();
+          if (e.key === 'Escape') _exitEditMode();
+        });
+      }
+    },
+
+    getName() { return _name; },
   };
 })();
 
@@ -184,10 +282,11 @@ const GreetingDisplay = {
 // ===== FocusTimer =====
 
 const FocusTimer = (() => {
-  let state = 'IDLE';       // 'IDLE' | 'RUNNING' | 'PAUSED'
-  let remaining = 1500;     // seconds
-  let startTimestamp = 0;   // ms, from Date.now()
-  let startRemaining = 0;   // seconds snapshot when start() is called
+  let state = 'IDLE';           // 'IDLE' | 'RUNNING' | 'PAUSED'
+  let _selectedDuration = 1500; // seconds — user-selected, persisted
+  let remaining = 1500;         // seconds — current countdown value
+  let startTimestamp = 0;       // ms, from Date.now()
+  let startRemaining = 0;       // seconds snapshot when start() is called
   let _intervalId = null;
 
   /**
@@ -212,6 +311,13 @@ const FocusTimer = (() => {
     if (startBtn) startBtn.disabled = state === 'RUNNING';
     if (stopBtn)  stopBtn.disabled  = state !== 'RUNNING';
     if (resetBtn) resetBtn.disabled = false;
+
+    // Prevent editing the duration while running, but keep Apply enabled so
+    // the user can receive the explanatory inline message if clicked.
+    const durationInput = document.getElementById('duration-input');
+    const applyBtn = document.getElementById('duration-apply-btn');
+    if (durationInput) durationInput.disabled = state === 'RUNNING';
+    if (applyBtn) applyBtn.disabled = false;
   }
 
   function start() {
@@ -251,20 +357,79 @@ const FocusTimer = (() => {
     clearInterval(_intervalId);
     _intervalId = null;
     state = 'IDLE';
-    remaining = 1500;
+    remaining = _selectedDuration;
     render();
   }
 
+  /**
+   * Attempts to apply a new duration from the duration input.
+   * Blocked while RUNNING with inline error feedback.
+   * @param {boolean} [silent=false] — if true, skip the error message (used on init)
+   */
+  function applyDuration(silent) {
+    const input = document.getElementById('duration-input');
+    const errorEl = document.getElementById('duration-error');
+
+    if (state === 'RUNNING') {
+      if (!silent && errorEl) {
+        errorEl.textContent = 'Stop the timer before changing duration.';
+        errorEl.hidden = false;
+        setTimeout(() => { errorEl.hidden = true; }, 2500);
+      }
+      return;
+    }
+
+    if (!input) return;
+    // valueAsNumber preserves decimal values, so 1.5 is rejected instead
+    // of being silently truncated to 1 by parseInt(). Empty input becomes NaN.
+    const raw = input.valueAsNumber;
+
+    if (!Number.isInteger(raw) || raw < 1 || raw > 120) {
+      if (!silent && errorEl) {
+        errorEl.textContent = 'Enter a whole number between 1 and 120.';
+        errorEl.hidden = false;
+        setTimeout(() => { errorEl.hidden = true; }, 2500);
+      }
+      if (input) input.classList.add('input-error');
+      setTimeout(() => { if (input) input.classList.remove('input-error'); }, 1500);
+      return;
+    }
+
+    if (errorEl) errorEl.hidden = true;
+    _selectedDuration = raw * 60;
+    LocalStorageService.setRaw('pomodoroDuration', String(raw));
+    reset();
+  }
+
   function init() {
+    // Restore saved duration from localStorage
+    const savedDuration = LocalStorageService.getRaw('pomodoroDuration');
+    if (savedDuration !== null) {
+      const parsed = Number(savedDuration);
+      if (Number.isInteger(parsed) && parsed >= 1 && parsed <= 120) {
+        _selectedDuration = parsed * 60;
+        const durationInput = document.getElementById('duration-input');
+        if (durationInput) durationInput.value = String(parsed);
+      }
+    }
+
     reset();
 
     const startBtn = document.getElementById('timer-start');
     const stopBtn  = document.getElementById('timer-stop');
     const resetBtn = document.getElementById('timer-reset');
+    const applyBtn = document.getElementById('duration-apply-btn');
+    const durationInput = document.getElementById('duration-input');
 
     if (startBtn) startBtn.addEventListener('click', start);
     if (stopBtn)  stopBtn.addEventListener('click', stop);
     if (resetBtn) resetBtn.addEventListener('click', reset);
+    if (applyBtn) applyBtn.addEventListener('click', () => applyDuration(false));
+    if (durationInput) {
+      durationInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') applyDuration(false);
+      });
+    }
   }
 
   return { init, formatDisplay };
@@ -847,6 +1012,7 @@ document.addEventListener('DOMContentLoaded', () => {
     themeToggleBtn.addEventListener('click', () => ThemeManager.toggle());
   }
 
+  NameManager.init();
   GreetingDisplay.init();
   FocusTimer.init();
   TaskManager.init();

@@ -5,8 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>To-Do List Life Dashboard</title>
     <script>
-      const t = localStorage.getItem('theme');
-      document.documentElement.setAttribute('data-theme', t === 'light' ? 'light' : 'dark');
+      (() => {
+        try {
+          const savedTheme = window.localStorage.getItem('theme');
+          document.documentElement.setAttribute(
+            'data-theme',
+            savedTheme === 'light' ? 'light' : 'dark'
+          );
+        } catch (error) {
+          // Keep the page usable when browser storage is unavailable.
+          document.documentElement.setAttribute('data-theme', 'dark');
+          console.warn('[Theme] Could not read saved theme; using dark mode.', error);
+        }
+      })();
     </script>
     <link rel="stylesheet" href="css/style.css" />
   </head>
@@ -14,11 +25,27 @@
     <!-- Header -->
     <header class="header">
       <div class="header__greeting-group">
+        <span id="welcome-name" class="header__welcome"></span>
         <span id="greeting" class="header__greeting"></span>
         <span id="clock" class="header__clock"></span>
         <span id="date-display" class="header__date"></span>
       </div>
-      <button id="theme-toggle" class="header__theme-toggle" aria-label="Toggle theme"></button>
+      <div class="header__name-edit" id="name-edit-area" hidden>
+        <input
+          id="name-input"
+          class="input header__name-input"
+          type="text"
+          placeholder="Your name"
+          aria-label="Enter your name"
+          maxlength="40"
+        />
+        <button id="name-save-btn" class="btn btn--primary">Save</button>
+        <button id="name-cancel-btn" class="btn btn--ghost">Cancel</button>
+      </div>
+      <div class="header__right">
+        <button id="edit-name-btn" class="btn btn--ghost header__edit-name-btn" aria-label="Edit name">✏ Name</button>
+        <button id="theme-toggle" class="header__theme-toggle" aria-label="Toggle theme"></button>
+      </div>
     </header>
 
     <!-- Main content -->
@@ -32,6 +59,20 @@
           <button id="timer-stop" class="btn btn--secondary">Stop</button>
           <button id="timer-reset" class="btn btn--ghost">Reset</button>
         </div>
+        <div class="timer__duration-row">
+          <label for="duration-input" class="timer__duration-label">Duration (min):</label>
+          <input
+            id="duration-input"
+            class="input timer__duration-input"
+            type="number"
+            min="1"
+            max="120"
+            value="25"
+            aria-label="Pomodoro duration in minutes"
+          />
+          <button id="duration-apply-btn" class="btn btn--secondary">Set</button>
+        </div>
+        <p id="duration-error" class="timer__duration-error" hidden></p>
       </section>
 
       <!-- Task Manager card -->

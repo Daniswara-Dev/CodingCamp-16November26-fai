@@ -4,7 +4,7 @@
 
 The To-Do List Life Dashboard is a single-page static web application built with vanilla HTML, CSS, and JavaScript. It runs entirely in the browser with no backend, no build step, and no external frameworks.
 
-The application provides five user-facing features on one page: a real-time clock and time-based greeting, a Pomodoro focus timer, a to-do list with full CRUD, a quick-links panel, and a light/dark theme toggle. All features co-exist in a single `index.html`, one `css/style.css`, and one `js/script.js`.
+The application provides five user-facing features on one page: a real-time clock and time-based greeting with a personalized welcome name, a Pomodoro focus timer with configurable duration, a to-do list with full CRUD, a quick-links panel, and a light/dark theme toggle. All features co-exist in a single `index.html`, one `css/style.css`, and one `js/script.js`.
 
 Persistent user data — Tasks, Quick Links, and Theme preferences — is stored in the browser's `localStorage` API. The clock is derived from system time on each tick, and the Focus Timer always resets to 25:00 on page refresh.
 
@@ -31,10 +31,11 @@ css/style.css
 └── CSS custom properties, layout, component styles, responsive breakpoints
 
 js/script.js
-├── LocalStorageService   — getJSON/setJSON for Tasks & Links; getRaw/setRaw for Theme
+├── LocalStorageService   — getJSON/setJSON for Tasks & Links; getRaw/setRaw for Theme, Name, Duration
 ├── ThemeManager          — theme read/write, toggle, CSS variable swap
-├── GreetingDisplay       — clock tick, date format, greeting text
-├── FocusTimer            — countdown state machine, interval management
+├── NameManager           — custom name read/write, inline edit mode
+├── GreetingDisplay       — clock tick, date format, greeting text, welcome name display
+├── FocusTimer            — countdown state machine, configurable duration, interval management
 ├── TaskManager           — task CRUD, render, localStorage sync
 └── QuickLinksManager     — link CRUD, URL validation, render, localStorage sync
 ```
@@ -55,10 +56,11 @@ This applies to both `TaskManager.render()` and `QuickLinksManager.render()`.
 
 **Initialization sequence** (DOMContentLoaded):
 1. `ThemeManager.init()` — confirm theme attribute (inline script already set it)
-2. `GreetingDisplay.init()` — start clock interval
-3. `FocusTimer.init()` — render initial 25:00 state
-4. `TaskManager.init()` — load tasks from localStorage, render
-5. `QuickLinksManager.init()` — load links from localStorage, render
+2. `NameManager.init()` — restore custom name, wire edit controls
+3. `GreetingDisplay.init()` — start clock interval
+4. `FocusTimer.init()` — restore saved duration, render initial state
+5. `TaskManager.init()` — load tasks from localStorage, render
+6. `QuickLinksManager.init()` — load links from localStorage, render
 
 ### Architecture Diagram
 
@@ -70,12 +72,13 @@ flowchart TD
 
     JS --> LSS[LocalStorageService\nget / set / remove]
     JS --> TM[ThemeManager\ninit / toggle / persist]
-    JS --> GD[GreetingDisplay\nclock tick / greeting / date]
-    JS --> FT[FocusTimer\nIDLE→RUNNING→PAUSED→IDLE]
+    JS --> NM[NameManager\ninit / save / inline edit]
+    JS --> GD[GreetingDisplay\nclock tick / greeting / date / welcome name]
+    JS --> FT[FocusTimer\nIDLE→RUNNING→PAUSED→IDLE\nconfigurable duration]
     JS --> TASK[TaskManager\nadd / edit / toggle / delete]
     JS --> QL[QuickLinksManager\nadd / delete / open]
 
-    LSS --> LS[(localStorage\ntasks / quickLinks / theme)]
+    LSS --> LS[(localStorage\ntasks / quickLinks / theme / userName / pomodoroDuration)]
     TM --> LSS
     TASK --> LSS
     QL --> LSS
@@ -99,11 +102,15 @@ Usage mapping:
 - Tasks → `getJSON("tasks")` / `setJSON("tasks", tasks)`
 - Quick Links → `getJSON("quickLinks")` / `setJSON("quickLinks", links)`
 - Theme → `getRaw("theme")` / `setRaw("theme", theme)`
+- Custom Name → `getRaw("userName")` / `setRaw("userName", name)`
+- Pomodoro Duration → `getRaw("pomodoroDuration")` / `setRaw("pomodoroDuration", minutes)`
 
 Keys used across the application:
 - `"tasks"` — JSON array of Task objects
 - `"quickLinks"` — JSON array of Link objects
 - `"theme"` — `"dark"` | `"light"`
+- `"userName"` — custom display name string; absent means no name configured
+- `"pomodoroDuration"` — integer string (minutes, 1–120); absent means default 25
 
 ### ThemeManager
 
@@ -126,6 +133,21 @@ generateId() → string
 ```
 
 Using `crypto.randomUUID()` eliminates the collision risk that exists when multiple items are added in rapid succession (which `Date.now()` alone does not prevent).
+
+### NameManager
+
+```
+init()    → reads getRaw("userName"), renders welcome message, wires edit/save/cancel buttons
+getName() → returns current custom name string (empty string if none set)
+
+Internal:
+  _render()       → updates #welcome-name element: "Welcome, [name]!" or "Welcome!" if name is empty
+  _enterEditMode() → reveals #name-edit-area, hides #edit-name-btn, populates input with current name
+  _exitEditMode()  → hides #name-edit-area, shows #edit-name-btn, clears input error state
+  _save()         → trims input; on empty: shows red border and returns; otherwise saves to localStorage, calls _render(), _exitEditMode()
+```
+
+The name is displayed using `.textContent` — raw user input is never assigned via `innerHTML`.
 
 ### GreetingDisplay
 
@@ -155,7 +177,7 @@ RUNNING --[tick reaches 0]--> IDLE
 ```
 
 ```
-init()    → set state=IDLE, remaining=1500, render
+init()    → restore _selectedDuration from localStorage ("pomodoroDuration", default 25 min), populate duration input, then call reset()
 
 start() when state is IDLE or PAUSED:
   - snapshot startRemaining = remaining (accurate value, saved by stop() if resuming)
@@ -170,12 +192,13 @@ stop():
   - state = PAUSED
   - render()
 
-reset()      → clearInterval, state=IDLE, remaining=1500, render
-countdown()  → recalculate remaining from timestamp; if remaining <= 0: stop countdown, state=IDLE; render
+reset()          → clearInterval, state=IDLE, remaining=_selectedDuration, render
+countdown()      → recalculate remaining from timestamp; if remaining <= 0: stop countdown, state=IDLE; render
+applyDuration()  → blocked when RUNNING (shows inline error); validates input (1–120 integer); sets _selectedDuration = input*60; persists to localStorage; calls reset()
 formatDisplay(seconds: number) → "MM:SS" string
 ```
 
-The timer does not persist state to localStorage (a refreshed page always resets to 25:00 per requirements).
+The timer does not persist the active countdown state to localStorage — a page refresh always resets to the saved `_selectedDuration`.
 
 ### TaskManager
 
@@ -279,28 +302,32 @@ Stored directly as a string value under key `"theme"`:
 
 ```
 localStorage
-├── "theme"      → "dark" | "light"
-├── "tasks"      → JSON.stringify(Task[])
-└── "quickLinks" → JSON.stringify(Link[])
+├── "theme"            → "dark" | "light"
+├── "userName"         → custom name string (absent = no name configured)
+├── "pomodoroDuration" → integer string in minutes, 1–120 (absent = default 25)
+├── "tasks"            → JSON.stringify(Task[])
+└── "quickLinks"       → JSON.stringify(Link[])
 ```
 
 ## UI Layout
 
 ```
-┌─────────────────────────────────────────────────┐
-│  HEADER                                         │
-│  [Good Morning]  [14:32]  [Monday, 1 Jan 2025]  │
-│                                        [🌙 / ☀] │
-├──────────────────┬──────────────────────────────┤
-│  FOCUS TIMER     │  TASK MANAGER                │
-│  25:00           │  [ Add task...  ] [+]        │
-│  [Start][Stop][Reset]  │  ☐ Buy groceries  [✏][🗑] │
-│                  │  ☑ Read chapter      [✏][🗑] │
-├──────────────────┴──────────────────────────────┤
-│  QUICK LINKS                                    │
-│  [Name] [URL] [Add]                            │
-│  [GitHub] [YouTube] [+ Add Link]               │
-└─────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────┐
+│  HEADER                                                     │
+│  [Welcome, Alice!]  [Good Morning]  [14:32]  [Mon, 1 Jan]  │
+│                                     [✏ Name]  [🌙 / ☀]    │
+│  (name edit area — hidden by default)                       │
+├──────────────────────┬──────────────────────────────────────┤
+│  FOCUS TIMER         │  TASK MANAGER                        │
+│  25:00               │  [ Add task...  ] [+]                │
+│  [Start][Stop][Reset]│  Sort: [Active First ▾]              │
+│  Duration: [25] [Set]│  ☐ Buy groceries        [✏][🗑]     │
+│                      │  ☑ Read chapter          [✏][🗑]    │
+├──────────────────────┴──────────────────────────────────────┤
+│  QUICK LINKS                                                │
+│  [Name] [URL] [Add]                                        │
+│  [GitHub] [YouTube]                                        │
+└─────────────────────────────────────────────────────────────┘
 ```
 
 **Responsive breakpoint at 768px**: the two-column main grid collapses to a single column; all cards stack vertically.

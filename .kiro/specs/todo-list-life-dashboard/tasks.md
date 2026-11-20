@@ -119,3 +119,44 @@ Build a single-page productivity dashboard with vanilla HTML, CSS, and JavaScrip
   ]
 }
 ```
+
+---
+
+## Challenge 4: Custom Name in Greeting
+
+- [x] 13. Implement NameManager
+  - [x] 13.1 Add `#welcome-name` span, `#name-edit-area` div (hidden), `#name-input`, `#name-save-btn`, `#name-cancel-btn`, and `#edit-name-btn` button to the header in `index.html`
+  - [x] 13.2 Write `NameManager` IIFE in `js/script.js`: `init()` restores name from `getRaw("userName")`, renders welcome message, wires edit/save/cancel event listeners; `_save()` trims input, rejects empty with red border, persists via `setRaw("userName", name)`, calls `_render()` and `_exitEditMode()`; `_render()` sets `#welcome-name.textContent` to `"Welcome, [name]!"` or `"Welcome!"`; Enter saves, Escape cancels
+  - [x] 13.3 Add `NameManager.init()` to the DOMContentLoaded sequence before `GreetingDisplay.init()`
+  - [x] 13.4 Add `.header__right`, `.header__welcome`, `.header__edit-name-btn`, `.header__name-edit`, `.header__name-input` CSS rules in `css/style.css`
+  - _Requirements: 20.1, 20.2, 20.3, 20.4, 20.5, 20.6, 20.7, 20.8, 20.9, 20.10_
+
+- [x] 14. Verify Challenge 4
+  - [x] No name saved → header shows "Welcome!"
+  - [x] Click ✏ Name → inline editor appears (no browser prompt)
+  - [x] Save with valid name → "Welcome, [name]!" displayed, stored, restored on refresh
+  - [x] Save with empty/whitespace → rejected (red border), editor stays open
+  - [x] Cancel → editor closes, name unchanged
+  - [x] Enter key saves, Escape key cancels
+  - [x] Name displayed via textContent (safe against XSS)
+
+---
+
+## Challenge 5: Change Pomodoro Time
+
+- [x] 15. Implement adjustable Pomodoro duration in FocusTimer
+  - [x] 15.1 Add `#duration-input` (number, min=1, max=120, default=25), `#duration-apply-btn`, and `#duration-error` paragraph to the Focus Timer card in `index.html`
+  - [x] 15.2 Add `_selectedDuration` state variable to `FocusTimer`; update `reset()` to use `_selectedDuration` instead of hardcoded 1500; add `applyDuration()` function that guards on RUNNING state (shows inline error), validates 1–120 integer, sets `_selectedDuration`, persists via `setRaw("pomodoroDuration", minutes)`, calls `reset()`; update `render()` to disable duration controls while RUNNING
+  - [x] 15.3 Update `FocusTimer.init()` to restore `_selectedDuration` from `getRaw("pomodoroDuration")` before calling `reset()`, and wire `#duration-apply-btn` click and Enter key on `#duration-input` to `applyDuration()`
+  - [x] 15.4 Add `.timer__duration-row`, `.timer__duration-label`, `.timer__duration-input`, `.timer__duration-error` CSS rules in `css/style.css`
+  - _Requirements: 21.1, 21.2, 21.3, 21.4, 21.5, 21.6, 21.7, 21.8, 21.9_
+
+- [x] 16. Verify Challenge 5
+  - [x] Default load → timer shows 25:00; duration input shows 25
+  - [x] Change to 10, click Set → timer resets to 10:00
+  - [x] Start timer, attempt to change duration → rejected with inline error, countdown uninterrupted
+  - [x] Stop timer, change to 5 → timer resets to 05:00
+  - [x] Reset → restores to currently selected duration (not always 25:00)
+  - [x] Refresh page → saved duration restored from localStorage
+  - [x] Invalid input (0, 121, non-integer) → rejected with inline error feedback
+  - [x] Existing Start/Stop/Resume behavior unchanged
