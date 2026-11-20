@@ -210,7 +210,7 @@ const FocusTimer = (() => {
     const resetBtn = document.getElementById('timer-reset');
 
     if (startBtn) startBtn.disabled = state === 'RUNNING';
-    if (stopBtn)  stopBtn.disabled  = state === 'IDLE';
+    if (stopBtn)  stopBtn.disabled  = state !== 'RUNNING';
     if (resetBtn) resetBtn.disabled = false;
   }
 
@@ -236,7 +236,7 @@ const FocusTimer = (() => {
   }
 
   function stop() {
-    if (state === 'IDLE') return;
+    if (state === 'IDLE' || state === 'PAUSED') return;
 
     const elapsed = Math.floor((Date.now() - startTimestamp) / 1000);
     remaining = Math.max(0, startRemaining - elapsed);

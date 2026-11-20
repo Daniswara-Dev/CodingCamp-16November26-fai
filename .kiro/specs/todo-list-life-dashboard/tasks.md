@@ -14,8 +14,8 @@ Build a single-page productivity dashboard with vanilla HTML, CSS, and JavaScrip
   - _Requirements: 11.1, 11.2, 11.3, 17.1, 17.2, 17.3_
 
 - [x] 2. Add theme flash prevention and HTML structure
-  - [ ] 2.1 Add inline `<script>` in `<head>` of `index.html` that reads `localStorage.getItem('theme')` and calls `document.documentElement.setAttribute('data-theme', t === 'light' ? 'light' : 'dark')` before the browser paints
-  - [ ] 2.2 Add all semantic HTML markup to `index.html`: header (clock, date, greeting, theme toggle button), main grid (Focus Timer card and Task Manager card), Quick Links card — use `id` attributes that `js/script.js` will target
+  - [x] 2.1 Add inline `<script>` in `<head>` of `index.html` that reads `localStorage.getItem('theme')` and calls `document.documentElement.setAttribute('data-theme', t === 'light' ? 'light' : 'dark')` before the browser paints
+  - [x] 2.2 Add all semantic HTML markup to `index.html`: header (clock, date, greeting, theme toggle button), main grid (Focus Timer card and Task Manager card), Quick Links card — use `id` attributes that `js/script.js` will target
   - _Requirements: 14.1, 14.2, 14.3, 16.7, 16.8, 16.9_
 
 - [x] 3. Implement CSS foundation
@@ -67,7 +67,7 @@ Build a single-page productivity dashboard with vanilla HTML, CSS, and JavaScrip
   - [x] 9.6 Add `QuickLinksManager.init()` to the DOMContentLoaded initialization sequence
   - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5, 9.6, 10.1, 10.2, 10.3, 10.4_
 
-- [ ] 10. Checkpoint — wire full initialization sequence
+- [x] 10. Checkpoint — wire full initialization sequence
   - Confirm the DOMContentLoaded handler in `js/script.js` calls all inits in this order: `ThemeManager.init()`, `GreetingDisplay.init()`, `FocusTimer.init()`, `TaskManager.init()`, `QuickLinksManager.init()`
   - Open `index.html` in a browser and verify the page loads without console errors, the clock ticks, the timer shows 25:00, and both empty lists render correctly
   - Ensure all tests pass, ask the user if questions arise.
@@ -77,7 +77,7 @@ Build a single-page productivity dashboard with vanilla HTML, CSS, and JavaScrip
   - [x] 11.2 Apply `.input-error` class (remove after short delay or on next valid input) in `TaskManager.addTask`, `TaskManager.editTask`, `QuickLinksManager.addLink` for empty/whitespace rejections and invalid URL rejections; call `showStorageWarning` from `LocalStorageService.setJSON` and `setRaw` on storage failure
   - _Requirements: 4.2, 5.3, 9.2, 9.3_
 
-- [ ] 12. Checkpoint — verify all features end-to-end
+- [x] 12. Checkpoint — verify all features end-to-end
   - Walk through every item in the Manual Integration Testing checklist in `design.md`: Greeting Display, Focus Timer (start/stop/resume/reset/auto-stop at 00:00), Task Manager (add/reject empty/edit/reject empty edit/toggle/delete), Quick Links (add valid/reject empty/reject non-http/reject no-hostname URL/open in new tab/delete), Theme (default dark/toggle/persist/no flash on refresh)
   - Verify responsive layout: at ≥768px timer and tasks are side by side; at <768px all cards stack
   - Verify both themes look correct at all breakpoints

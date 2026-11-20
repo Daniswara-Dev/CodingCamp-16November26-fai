@@ -392,6 +392,74 @@
         "chatSessionId": "sess_0488bffe-ca26-4419-b6d9-1bb7b6c006c5",
         "timestamp": 1795102235948
       }
+    ],
+    "2.1 Add inline `<script>` in `<head>` of `index.html` that reads `localStorage.getItem('theme')` and calls `document.documentElement.setAttribute('data-theme', t === 'light' ? 'light' : 'dark')` before the browser paints": [
+      {
+        "executionId": "225f6b3d-d4f9-4b76-95ae-57f7b94955f8",
+        "chatSessionId": "sess_1571077c-8759-43f7-9b85-3291577b2025",
+        "timestamp": 1795161520424
+      },
+      {
+        "executionId": "225f6b3d-d4f9-4b76-95ae-57f7b94955f8",
+        "chatSessionId": "sess_1571077c-8759-43f7-9b85-3291577b2025",
+        "timestamp": 1795161525277
+      },
+      {
+        "executionId": "225f6b3d-d4f9-4b76-95ae-57f7b94955f8",
+        "chatSessionId": "sess_1571077c-8759-43f7-9b85-3291577b2025",
+        "timestamp": 1795161576821
+      }
+    ],
+    "2.2 Add all semantic HTML markup to `index.html`: header (clock, date, greeting, theme toggle button), main grid (Focus Timer card and Task Manager card), Quick Links card — use `id` attributes that `js/script.js` will target": [
+      {
+        "executionId": "225f6b3d-d4f9-4b76-95ae-57f7b94955f8",
+        "chatSessionId": "sess_1571077c-8759-43f7-9b85-3291577b2025",
+        "timestamp": 1795161520572
+      },
+      {
+        "executionId": "225f6b3d-d4f9-4b76-95ae-57f7b94955f8",
+        "chatSessionId": "sess_1571077c-8759-43f7-9b85-3291577b2025",
+        "timestamp": 1795161528307
+      },
+      {
+        "executionId": "225f6b3d-d4f9-4b76-95ae-57f7b94955f8",
+        "chatSessionId": "sess_1571077c-8759-43f7-9b85-3291577b2025",
+        "timestamp": 1795161580391
+      }
+    ],
+    "10. Checkpoint — wire full initialization sequence": [
+      {
+        "executionId": "225f6b3d-d4f9-4b76-95ae-57f7b94955f8",
+        "chatSessionId": "sess_1571077c-8759-43f7-9b85-3291577b2025",
+        "timestamp": 1795161520631
+      },
+      {
+        "executionId": "225f6b3d-d4f9-4b76-95ae-57f7b94955f8",
+        "chatSessionId": "sess_1571077c-8759-43f7-9b85-3291577b2025",
+        "timestamp": 1795161587364
+      },
+      {
+        "executionId": "225f6b3d-d4f9-4b76-95ae-57f7b94955f8",
+        "chatSessionId": "sess_1571077c-8759-43f7-9b85-3291577b2025",
+        "timestamp": 1795161629579
+      }
+    ],
+    "12. Checkpoint — verify all features end-to-end": [
+      {
+        "executionId": "225f6b3d-d4f9-4b76-95ae-57f7b94955f8",
+        "chatSessionId": "sess_1571077c-8759-43f7-9b85-3291577b2025",
+        "timestamp": 1795161520679
+      },
+      {
+        "executionId": "225f6b3d-d4f9-4b76-95ae-57f7b94955f8",
+        "chatSessionId": "sess_1571077c-8759-43f7-9b85-3291577b2025",
+        "timestamp": 1795161632790
+      },
+      {
+        "executionId": "225f6b3d-d4f9-4b76-95ae-57f7b94955f8",
+        "chatSessionId": "sess_1571077c-8759-43f7-9b85-3291577b2025",
+        "timestamp": 1795161721404
+      }
     ]
   }
 }
